@@ -38,21 +38,21 @@ export async function getBlockTransactionsAsync (startBlock: number, endBlock: n
       // for every block, handle transactions
       let startTimeTransactions = process.hrtime()
       let transactionCount = 0
-      for (let blockIndex = 0; blockIndex < resBlocks.length; blockIndex++) {
+      for (let blockIndex = 0; blockIndex < resBlocks.length;) {
         let block = resBlocks[blockIndex]
         if (block) {
           try {
             let res = await getTransactionsFromBlockAsync(block)
-            transactionCount += res.length
             if (res) {
+              transactionCount += res.length
               transactions = transactions.concat(res)
+              blockIndex++
             }
           } catch (error) {
             // save fail blocks to setttings DB
             let drop = new DropInfo(block, error.message)
             dbUtils.saveDropsInfoAsync(drop)            
             logger.error(error)
-            return null
           }
         }
       }
@@ -141,16 +141,18 @@ export async function getBlockTransactionsMapAsync (startBlock: number, endBlock
     }
     // wait for block result, for each block , get full tranaction info
     let resBlocks = await Promise.all(blocksPromises)
-    for (let blockIndex = 0; blockIndex <= resBlocks.length; blockIndex++) {
+    for (let blockIndex = 0; blockIndex <= resBlocks.length; ) {
       let block = resBlocks[blockIndex]
       if (block) {
         try {
           let transactions = await getTransactionsFromBlockAsync(block)
-          blockMap.set(block.number, { transactions: transactions, blockHash: block.hash })
-          transactionCount += transactions.length
+          if(transactions) {
+            blockMap.set(block.number, { transactions: transactions, blockHash: block.hash })
+            transactionCount += transactions.length
+            blockIndex++
+          }
         } catch (error) {
           logger.info(error)
-          return null
         }
       }
     }

@@ -128,6 +128,9 @@ export class IndexerTransactions {
         let elapsedSeconds = utils.parseHrtimeToSeconds(process.hrtime(startTime))
         logger.info(`indexHistory method, ${this.indexSetttings.endBlock - this.indexSetttings.startBlock} blocks, duration in sec: ${elapsedSeconds}`);
         
+        // make sure to do last refresh
+        dbUtils.refreshViews('refreshDummyAccount', this.indexSetttings.endBlock - 1)         
+
         // advance to the next block chunk
         this.indexSetttings.startBlock = this.indexSetttings.endBlock
         this.indexSetttings.endBlock += configuration.BlockChunkSize
