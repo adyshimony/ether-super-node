@@ -12,7 +12,7 @@ curl -H "Content-Type: application/json" -X POST http://admin:EdgySuper11@localh
 
 curl -H "Content-Type: application/json" -X POST http://admin:EdgySuper11@localhost:5984/supernodedb-400000-499999/_compact
 
-curl -H "Content-Type: application/json" -X POST http://admin:EdgySuper11@localhost:5984/supernodedb-5000000-599999/_compact
+curl -H "Content-Type: application/json" -X POST http://admin:EdgySuper11@localhost:5984/supernodedb-500000-599999/_compact
 
 curl -H "Content-Type: application/json" -X POST http://admin:EdgySuper11@localhost:5984/supernodedb-600000-699999/_compact
 
