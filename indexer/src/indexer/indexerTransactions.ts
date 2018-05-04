@@ -259,6 +259,8 @@ export class IndexerTransactions {
 
     logger.info(`init startLiveIndexerProcess, fetch all blocks, from ${lastSavedBlock} to ${highestBlock.number}`)
     this.liveBlocksTransactionsMap = await blockchainUtils.getBlockTransactionsMapAsync(lastSavedBlock, highestBlock.number)
+    logger.info(`init startLiveIndexerProcess, all blocks fetche, from ${lastSavedBlock} to ${highestBlock.number}`)
+
 
     let elapsedMapSeconds = utils.parseHrtimeToSeconds(process.hrtime(startMapTime))
     logger.info(`init startLiveIndexerProcess blockchainUtils.getBlockTransactionsMapAsync sec: ${elapsedMapSeconds}`)
