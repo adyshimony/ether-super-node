@@ -181,6 +181,10 @@ export async function getSingleBlockTransactionsAsync (blockNumber: number): Pro
   try {
     // fetch full block, include transactions
     let resBlock = await web3.eth.getBlock(blockNumber, true)
+    if(!resBlock) {
+      logger.error(`getSingleBlockTransactionsAsync blockNumber ${blockNumber} not exits, perhaps a regorg result?.`)
+      return null
+    }
     let transactions = await getTransactionsFromBlockAsync(resBlock)
     return transactions
   } catch (error) {

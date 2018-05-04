@@ -220,8 +220,8 @@ export class IndexerTransactions {
         try {
           await dbUtils.saveTransactionsBulkAsync(transactionsToSave, startBlock, endBlock)
         } catch (error) {
-          logger.log('error', 'saveTransactions - error in dbutils while saving transactions, abort')
-          logger.log('error', error)
+          logger.error('saveTransactions - error in dbutils while saving transactions, abort')
+          logger.error('error', error)
           throw (new Error('saveTransactions - error in dbutils while saving transactions, abort'))
         }
       }
@@ -345,8 +345,15 @@ export class IndexerTransactions {
           let blockNumber = changedBlocks[blockIndex].number
           // bring full block
           let blockTransactions = await blockchainUtils.getSingleBlockTransactionsAsync(blockNumber)
-          logger.info(`live updateLiveBlocks update block ${blockNumber}`)
-          this.liveBlocksTransactionsMap.set(blockNumber, {transactions: blockTransactions, blockHash: changedBlocks[blockIndex].hash})
+          if(blockTransactions) {
+            logger.info(`live updateLiveBlocks update block ${blockNumber}`)
+            this.liveBlocksTransactionsMap.set(blockNumber, {transactions: blockTransactions, blockHash: changedBlocks[blockIndex].hash})
+          } else {
+            logger.info(`live updateLiveBlocks getSingleBlockTransactionsAsync for ${blockNumber} fail, removing block from list`)
+            if (this.liveBlocksTransactionsMap.has(blockNumber)) {
+              this.liveBlocksTransactionsMap.delete(blockNumber)            
+            }                      
+          }
         }
       }
     } catch (error) {
